@@ -1,0 +1,25 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "java (build)",
+			"paths": [
+				"${workspace}"
+			],
+			"isFullBuild": true,
+			"group": "build",
+			"problemMatcher": [],
+			"label": "java (build): Build Workspace",
+			"detail": "$(tools) Build all the Java projects in workspace."
+		},
+		{
+            "label": "runJavaFX",
+            "type": "shell",
+            "command": "mvn javafx:run",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+	]
+}
