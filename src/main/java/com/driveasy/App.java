@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import com.driveasy.Database.ConnectionManager;
+import com.driveasy.Database.FileManager;
 import com.driveasy.Controllers.LoginController;
 
 public class App extends Application {
@@ -33,21 +34,10 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
-        ConnectionManager manager = ConnectionManager.getInstance();
-        manager.setup( "jdbc:postgresql://localhost:5432/driveasy?useUnicode=yes&characterEncoding=UTF-8", "postgres", "lol123", 5);
-        manager.connect();
-        Connection connection = manager.getConnection();
-        try {
-            System.out.println(manager.isConnected());
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM users;", new String[] { "id", "name", "email", "password" });
-            ResultSet result = statement.executeQuery();
-            while (result.next()) {
-                System.out.println(result.getString("id") + " " + result.getString("name") +" " + result.getString("email") +" " + result.getString("password"));
-            }
-        } catch (Exception e) {
-            System.out.println("Error: "+e.getMessage());
-        }
-        manager.disconnect();
+        FileManager manager = FileManager.getInstance();
+        manager.ReadFile("text.txt");
+        manager.WriteFile("text.txt", "Hello World\n");
+        manager.ReadFile("text.txt");
         launch();
     }
 }
