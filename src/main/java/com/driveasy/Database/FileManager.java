@@ -9,19 +9,25 @@ import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
+import com.driveasy.Core.Users.User;
 import com.driveasy.Tools.Error;
+import com.driveasy.Tools.LoggedError;
+
 import java.nio.file.Paths;
 import java.nio.file.Files;
 
-import com.driveasy.Core.User;
 import com.google.gson.Gson;
+import com.google.gson.JsonIOException;
 import com.google.gson.reflect.TypeToken;
 
 /*
- * File Manager represents database (reading and writing data to a text file)
+ * File Manager represents database connection (reading and writing data to a text file)
+ * Supports json serialization
  */
 public class FileManager implements UserData {
     private static final String dataPath = "data";
+    private static final String logPath = "logs";
 
     private static FileManager instance = null;
     private Gson gson;
@@ -33,10 +39,6 @@ public class FileManager implements UserData {
         }
 
         @Override
-        public String toString() {
-            return "["+ Name + "] "+source+": "+message+" (caused by "+exception+")";
-        }
-
         public void Handle() {
             System.out.println(this);
         }
@@ -62,7 +64,8 @@ public class FileManager implements UserData {
             }
             myReader.close();
         } catch (FileNotFoundException e) {
-            System.out.println("Error: "+e.getMessage());
+            FileManagerError error = new FileManagerError("ReadFile", "Failed to read file.", e.getMessage());
+            error.Handle();
         }
         return data;
     }
@@ -71,8 +74,9 @@ public class FileManager implements UserData {
         // append to a text file, create if doesn't exist
         try {
             Files.createDirectories(Paths.get(dataPath));
+            Files.createDirectories(Paths.get(logPath));
         } catch (IOException e) {
-            FileManagerError error = new FileManagerError("WriteFile", "Failed to create data directory.", e.getMessage());
+            FileManagerError error = new FileManagerError("WriteFile", "Failed to create required directory structure.", e.getMessage());
             error.Handle();
         }
         try {
@@ -80,7 +84,8 @@ public class FileManager implements UserData {
             myWriter.write(data);
             myWriter.close();
         } catch (IOException e) {
-            System.out.println("Error: "+e.getMessage());
+            FileManagerError error = new FileManagerError("WriteFile", "Failed to write to file.", e.getMessage());
+            error.Handle();
         }
     }
 
@@ -95,7 +100,8 @@ public class FileManager implements UserData {
             }
             myReader.close();
         } catch (FileNotFoundException e) {
-            System.out.println("Error: "+e.getMessage());
+            FileManagerError error = new FileManagerError("ReadFileAsString", "Failed to read file as string.", e.getMessage());
+            error.Handle();
         }
         return data;
     }
@@ -107,7 +113,8 @@ public class FileManager implements UserData {
             myWriter.write("");
             myWriter.close();
         } catch (IOException e) {
-            System.out.println("Error: "+e.getMessage());
+            FileManagerError error = new FileManagerError("CleanFile", "Failed to clean file.", e.getMessage());
+            error.Handle();
         }
     }
 
@@ -138,6 +145,8 @@ public class FileManager implements UserData {
         try {
             String rawData = ReadFileAsString(path);
             ArrayList<User> data = gson.fromJson(rawData, new TypeToken<List<User>>(){}.getType());
+            if (data == null) // for some reason gson.fromJson returns null instead of throwing an exception
+                throw new JsonIOException("Failed to parse json.");
             return data;
         } catch (Exception e) {
             FileManagerError error = new FileManagerError("GetUsers", "Failed to read users from a text file.", e.getMessage());

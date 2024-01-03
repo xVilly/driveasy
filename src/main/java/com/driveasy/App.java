@@ -6,7 +6,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import com.driveasy.Core.User;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.driveasy.Database.ConnectionManager;
@@ -17,17 +16,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.driveasy.Controllers.LoginController;
+import com.driveasy.Controllers.SceneManager;
+import com.driveasy.Core.Users.User;
+import com.driveasy.Core.Users.UserManager;
 
 public class App extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Scenes/LoginPage.fxml"));
-        Parent root = loader.load();
-        LoginController controller = loader.getController();
-        controller.setMainWindow(primaryStage);
-        Scene scene = new Scene(root, 300, 250);
+        SceneManager sceneManager = SceneManager.getInstance();
         primaryStage.setTitle("driveasy");
-        primaryStage.setScene(scene);
+        sceneManager.Initialize(primaryStage);
+        sceneManager.LoadScenes();
         primaryStage.show();
     }
 
@@ -38,17 +37,11 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
-        UserData manager = (UserData) FileManager.getInstance();
-        /*User u1 = new User("John", "Doe", "password", "123@", "125", "3523");
-        User u2 = new User("Walter", "White", "password", "wwhite@", "newmexico", "3523");
-        ArrayList<User> users = new ArrayList<User>();
-        users.add(u1);
-        users.add(u2);
-        manager.SaveUsers(users);*/
-        ArrayList<User> users = manager.GetUsers();
-        for (User user : users) {
-            System.out.println(user.getFirstName());
-        }
+        UserManager userManager = UserManager.getInstance();
+        userManager.InitializeUsingFileManager();
+        userManager.Load();
+        User u = new User("Walter", "White", "white123", "white@mail.com", "address", "phone");
+        System.out.println(userManager.RegisterUser(u));
         launch();
     }
 }

@@ -2,7 +2,7 @@ package com.driveasy.Database;
 
 import java.util.ArrayList;
 
-import com.driveasy.Core.User;
+import com.driveasy.Core.Users.User;
 
 /*
  * Interface that defines the methods for saving and retrieving user data

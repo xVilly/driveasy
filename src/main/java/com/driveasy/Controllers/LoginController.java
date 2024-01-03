@@ -4,15 +4,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 
 public class LoginController {
-
-    private Stage mainWindow;
-
-    public void setMainWindow(Stage mainWindow) {
-        this.mainWindow = mainWindow;
-    }
 
     // FXML fields
     
@@ -25,7 +18,7 @@ public class LoginController {
 
     @FXML
     void onCreateAccount(ActionEvent event) {
-        
+        SceneManager.getInstance().activate("RegisterPage");
     }
 
     @FXML

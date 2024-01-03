@@ -1,9 +1,11 @@
-package com.driveasy.Core;
+package com.driveasy.Core.Users;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 
 public class User implements Serializable {
+    private UUID id;
     private String firstName;
     private String lastName;
     private String password;
@@ -12,6 +14,7 @@ public class User implements Serializable {
     private String phone;
 
     public User(String firstName, String lastName, String password, String email, String address, String phone) {
+        this.id = java.util.UUID.randomUUID();
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
@@ -66,5 +69,13 @@ public class User implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 }

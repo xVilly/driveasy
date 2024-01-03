@@ -1,18 +1,1 @@
-[
-    {
-        "firstName": "John",
-        "lastName": "Doe",
-        "password": "password",
-        "email": "123@",
-        "address": "125",
-        "phone": "3523"
-    },
-    {
-        "firstName": "Walter",
-        "lastName": "White",
-        "password": "password",
-        "email": "wwhite@",
-        "address": "newmexico",
-        "phone": "3523"
-    }
-]
+[{"id":"d4c50873-8788-4c5e-ba8d-200f0748865b","firstName":"Walter","lastName":"White","password":"white123","email":"white@mail.com","address":"address","phone":"phone"}]

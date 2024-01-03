@@ -12,7 +12,10 @@ public abstract class Error {
         this.exception = exception;
     }
 
-    public abstract String toString();
+    @Override
+    public String toString() {
+        return "["+ Name + "] "+source+": "+message+" (details: "+exception+")";
+    }
 
     public abstract void Handle();
 }
