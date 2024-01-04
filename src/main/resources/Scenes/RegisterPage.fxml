@@ -14,7 +14,6 @@
 <?import javafx.scene.paint.Stop?>
 <?import javafx.scene.text.Font?>
 
-
 <FlowPane alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.driveasy.Controllers.RegisterController">
    <children>
       <VBox alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity">
@@ -72,8 +71,8 @@
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </VBox.margin>
             </TextField>
-            <Label fx:id="errorLabel" disable="true" text="Error" visible="false" />
-            <Button fx:id="buttonRegister" mnemonicParsing="false" onAction="#onLogin" text="Create Account">
+            <Label fx:id="errorLabel" alignment="CENTER" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="200.0" text="Error" textAlignment="CENTER" visible="false" wrapText="true" />
+            <Button fx:id="buttonRegister" mnemonicParsing="false" onAction="#onCreateAccount" text="Create Account">
                <font>
                   <Font name="JetBrains Mono ExtraBold" size="16.0" />
                </font>
@@ -99,6 +98,14 @@
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>
+            </Button>
+            <Button fx:id="buttonGoBack" mnemonicParsing="false" onAction="#onGoBack" style="-fx-background-color: rgba(0,0,0,0);" text="Go Back" textFill="#29615c">
+               <font>
+                  <Font name="JetBrains Mono Light" size="12.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
             </Button>
          </children>
       </VBox>

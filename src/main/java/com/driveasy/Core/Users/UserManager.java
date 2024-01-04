@@ -21,6 +21,16 @@ public class UserManager {
         return instance;
     }
 
+    private User currentUser = null;
+
+    public User GetCurrentUser() {
+        return currentUser;
+    }
+
+    public void SetCurrentUser(User user) {
+        currentUser = user;
+    }
+
     private class UserManagerError extends LoggedError {
         public UserManagerError(String source, String message, String exception) {
             super(source, message, exception);
@@ -100,9 +110,24 @@ public class UserManager {
         for (User user : users) {
             if (user.getId().equals(java.util.UUID.fromString(id))) {
                 users.remove(user);
+                if (forceSave)
+                    Save();
                 return;
             }
         }
+    }
+
+    public void UpdateUserById(String id, User newUser) {
+        for (User user : users) {
+            if (user.getId().equals(java.util.UUID.fromString(id))) {
+                users.remove(user);
+                users.add(newUser);
+                if (forceSave)
+                    Save();
+                return;
+            }
+        }
+        
     }
 
     public UserValidationResult ValidateUserInfo(User user) {
@@ -127,5 +152,17 @@ public class UserManager {
         }
 
         return UserValidationResult.Valid;
+    }
+
+    public boolean CanUserLogin(String email, String password) {
+        if (!loaded) {
+            new UserManagerError("UserManager", "User manager not loaded", "User manager must be loaded before logging in a user").Handle();
+            return false;
+        }
+        for (User user : users) {
+            if (user.getEmail().equals(email) && user.getPassword().equals(password))
+                return true;
+        }
+        return false;
     }
 }

@@ -1,11 +1,16 @@
 package com.driveasy.Controllers;
 
+import com.driveasy.Core.Users.User;
+import com.driveasy.Core.Users.UserManager;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.paint.Paint;
 
-public class LoginController {
+public class LoginController implements IController {
 
     // FXML fields
     
@@ -13,6 +18,17 @@ public class LoginController {
     private TextField textValueEmail;
     @FXML
     private PasswordField textValuePassword;
+
+    @FXML
+    private Label loginError;
+
+    // Interface methods
+    public void onActivate() {
+        loginError.setVisible(false);
+        loginError.setDisable(true);
+        textValueEmail.setText("");
+        textValuePassword.setText("");
+    }
 
     // FXML events
 
@@ -23,7 +39,25 @@ public class LoginController {
 
     @FXML
     void onLogin(ActionEvent event) {
-        System.out.println("Email: "+textValueEmail.getText());
-        System.out.println("Password: "+textValuePassword.getText());
+        if (textValueEmail.getText().isEmpty() || textValuePassword.getText().isEmpty()) {
+            loginError.setVisible(true);
+            loginError.setDisable(false);
+            loginError.setText("Please fill in all the fields.");
+            loginError.setTextFill(Paint.valueOf("#ff0000"));
+            return;
+        }
+
+        UserManager manager = UserManager.getInstance();
+        String email = textValueEmail.getText();
+        if (manager.CanUserLogin(email, textValuePassword.getText())) {
+            User user = manager.GetUserByEmail(email);
+            manager.SetCurrentUser(user);
+            SceneManager.getInstance().activate("MainPage");
+        } else {
+            loginError.setVisible(true);
+            loginError.setDisable(false);
+            loginError.setText("Invalid email or password.");
+            loginError.setTextFill(Paint.valueOf("#ff0000"));
+        }
     }
 }
