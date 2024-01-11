@@ -3,20 +3,24 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<GridPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.driveasy.Controllers.MainController">
+<GridPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.driveasy.Controllers.MainController">
    <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
    </columnConstraints>
@@ -25,16 +29,145 @@
       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
    </rowConstraints>
    <children>
-      <TabPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #d1bff2;" tabClosingPolicy="UNAVAILABLE" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+      <TabPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #e8af79;" tabClosingPolicy="UNAVAILABLE" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
         <tabs>
           <Tab text="Browse Cars">
-            <content>
-              <AnchorPane maxHeight="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #d1bff2;">
+               <content>
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0">
                      <children>
-                        <Label layoutX="286.0" layoutY="177.0" text="Browse" />
+                        <ScrollPane layoutX="-23.0" layoutY="-26.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="5.0">
+                           <content>
+                              <VBox />
+                           </content>
+                        </ScrollPane>
+                        <VBox alignment="CENTER" layoutX="467.0" layoutY="22.0" maxWidth="190.0" minWidth="190.0" prefHeight="200.0" prefWidth="190.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                           <children>
+                              <Label text="Filters">
+                                 <font>
+                                    <Font name="JetBrains Mono SemiBold" size="18.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets bottom="15.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <Label text="Car Category">
+                                 <font>
+                                    <Font name="JetBrains Mono Medium" size="14.0" />
+                                 </font>
+                              </Label>
+                              <GridPane>
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <CheckBox fx:id="categorySmall" mnemonicParsing="false" onAction="#onCategoryChange" text="Small" />
+                                    <CheckBox fx:id="categoryMedium" mnemonicParsing="false" onAction="#onCategoryChange" text="Medium" GridPane.columnIndex="1" />
+                                    <CheckBox fx:id="categoryBig" mnemonicParsing="false" onAction="#onCategoryChange" text="Big" GridPane.rowIndex="1" />
+                                    <CheckBox fx:id="categorySUV" mnemonicParsing="false" onAction="#onCategoryChange" text="SUV" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                    <CheckBox fx:id="categoryMinivan" mnemonicParsing="false" onAction="#onCategoryChange" text="Minivan" GridPane.rowIndex="2" />
+                                    <CheckBox fx:id="categoryPremium" mnemonicParsing="false" onAction="#onCategoryChange" text="Premium" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                 </children>
+                              </GridPane>
+                              <Label text="Transmission">
+                                 <font>
+                                    <Font name="JetBrains Mono Medium" size="14.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets top="5.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <GridPane>
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <CheckBox fx:id="transmissionManual" mnemonicParsing="false" onAction="#onTransmissionChange" text="Manual" />
+                                    <CheckBox fx:id="transmissionAutomatic" mnemonicParsing="false" onAction="#onTransmissionChange" text="Automatic" GridPane.columnIndex="1" />
+                                 </children>
+                              </GridPane>
+                              <Label text="Car Pickup Location">
+                                 <font>
+                                    <Font name="JetBrains Mono Medium" size="14.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets top="5.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <GridPane>
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <CheckBox fx:id="pickupAirport" mnemonicParsing="false" onAction="#onPickupChange" text="Airport" />
+                                    <CheckBox fx:id="pickupBus" mnemonicParsing="false" onAction="#onPickupChange" text="Bus Station" GridPane.columnIndex="1" />
+                                    <CheckBox fx:id="pickupRental" mnemonicParsing="false" onAction="#onPickupChange" text="Rental" GridPane.rowIndex="1" />
+                                    <CheckBox fx:id="pickupTrain" mnemonicParsing="false" onAction="#onPickupChange" text="Train Station" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                 </children>
+                              </GridPane>
+                              <Label text="Price Range">
+                                 <font>
+                                    <Font name="JetBrains Mono Medium" size="14.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets top="5.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <HBox prefWidth="200.0">
+                                 <children>
+                                    <TextField alignment="CENTER" promptText="From">
+                                       <font>
+                                          <Font name="JetBrains Mono Medium" size="12.0" />
+                                       </font>
+                                    </TextField>
+                                    <TextField alignment="CENTER" promptText="To" />
+                                 </children>
+                              </HBox>
+                              <Label text="Sort By">
+                                 <font>
+                                    <Font name="JetBrains Mono Medium" size="14.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets top="5.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <GridPane>
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <RadioButton fx:id="sortName" mnemonicParsing="false" onAction="#onSortType" text="Name" />
+                                    <RadioButton fx:id="sortPrice" mnemonicParsing="false" onAction="#onSortType" text="Price" GridPane.rowIndex="1" />
+                                    <RadioButton fx:id="sortRating" mnemonicParsing="false" onAction="#onSortType" text="Rating" GridPane.rowIndex="2" />
+                                    <RadioButton fx:id="sortAscend" mnemonicParsing="false" onAction="#onSortDirection" text="Ascend" GridPane.columnIndex="1" />
+                                    <RadioButton fx:id="sortDescend" mnemonicParsing="false" onAction="#onSortDirection" text="Descend" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                 </children>
+                              </GridPane>
+                           </children>
+                        </VBox>
                      </children>
                   </AnchorPane>
-            </content>
+               </content>
           </Tab>
           <Tab text="Your Profile">
                <content>
@@ -203,7 +336,7 @@
             </Tab>
         </tabs>
       </TabPane>
-      <BorderPane maxHeight="30.0" prefHeight="30.0" prefWidth="200.0" style="-fx-background-color: #a17ee0;" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" GridPane.vgrow="NEVER">
+      <BorderPane maxHeight="30.0" prefHeight="30.0" prefWidth="200.0" style="-fx-background-color: #db9451;" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" GridPane.vgrow="NEVER">
          <left>
             <Label fx:id="nameLabel" prefHeight="17.0" text="Logged in as" BorderPane.alignment="CENTER">
                <font>
@@ -215,7 +348,7 @@
             </Label>
          </left>
          <right>
-            <Button fx:id="buttonLogOut" mnemonicParsing="false" onAction="#onLogOut" style="-fx-background-color: #7453b0;" text="Log out" textFill="#d3d3d3" BorderPane.alignment="CENTER">
+            <Button fx:id="buttonLogOut" mnemonicParsing="false" onAction="#onLogOut" style="-fx-background-color: #ad7137;" text="Log out" textFill="#d3d3d3" BorderPane.alignment="CENTER">
                <font>
                   <Font name="JetBrains Mono ExtraBold" size="12.0" />
                </font>
