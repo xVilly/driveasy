@@ -63,6 +63,7 @@ public class SceneManager {
             primaryStage.setScene(new Scene(root));
         else
             primaryStage.getScene().setRoot(root);
+
         controller.onActivate();
     }
 

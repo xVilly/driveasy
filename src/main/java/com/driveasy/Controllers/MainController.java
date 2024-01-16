@@ -1,5 +1,10 @@
 package com.driveasy.Controllers;
 
+import java.net.URL;
+
+import javax.imageio.ImageIO;
+
+import com.driveasy.Core.Cars.Car;
 import com.driveasy.Core.Users.User;
 import com.driveasy.Core.Users.UserManager;
 import com.driveasy.Core.Users.UserValidationResult;
@@ -11,7 +16,18 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 
 public class MainController implements IController {
@@ -88,6 +104,12 @@ public class MainController implements IController {
     @FXML
     private RadioButton sortRating;
 
+    @FXML
+    private VBox browserContent;
+
+    @FXML
+    private ScrollPane browserScroll;
+
     public void loadProfile() {
         User user = UserManager.getInstance().GetCurrentUser();
         if (user != null) {
@@ -100,8 +122,46 @@ public class MainController implements IController {
         }
     }
 
+    public void displayCarCard(Car car) {
+        AnchorPane panel = new AnchorPane();
+        panel.setPrefHeight(200.0);
+        CornerRadii cornerRadii = new CornerRadii(5);
+        panel.setBorder(new Border(new BorderStroke(Paint.valueOf("#000000"), BorderStrokeStyle.SOLID, cornerRadii, BorderWidths.DEFAULT)));
+        VBox.setMargin(panel, new javafx.geometry.Insets(0.0, 0.0, 5.0, 0.0));
+        
+        HBox carInfo = new HBox();
+        ImageView carImage = new ImageView();
+        carImage.setImage(new Image("/Images/Fiat500.jpg"));
+        carInfo.getChildren().add(carImage);
+
+        // leftmost info
+        VBox leftmostInfo = new VBox();
+        Label carName = new Label();
+        carName.setText(car.getModel() + " " + car.getBrand());
+        carName.setLayoutX(14.0);
+        carName.setLayoutY(14.0);
+        leftmostInfo.getChildren().add(carName);
+        AnchorPane.setLeftAnchor(leftmostInfo, 5.0);
+        carInfo.getChildren().add(leftmostInfo);
+        panel.getChildren().add(carInfo);
+
+        browserContent.getChildren().add(panel);
+    }
+
+    public void loadCars() {
+        browserScroll.setFitToWidth(true);
+        browserContent.getChildren().clear();
+        for (int i = 0; i < 10; i++) {
+            Car car = new Car();
+            car.setBrand("BMW");
+            car.setModel("M3");
+            displayCarCard(car);
+        }
+    }
+
     public void onActivate() {
         loadProfile();
+        loadCars();
     }
 
     @FXML
