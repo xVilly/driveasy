@@ -1,7 +1,7 @@
 # driveasy
 #### University project for Object-Oriented Programming<br>
 Simplistic car rental application, 
-<br>built in Java using JavaFX (*GUI*), PostgreSQL (*Database*), Maven (*Package Manager*)
+<br>built in Java using JavaFX (*GUI*), Maven (*Package Manager*)
 
 ## Prerequisites
 1. JDK (tested on ver 21.0.1)
