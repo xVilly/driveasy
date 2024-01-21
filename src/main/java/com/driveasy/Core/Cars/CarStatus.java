@@ -1,6 +1,8 @@
 package com.driveasy.Core.Cars;
 
-public enum CarStatus {
+import java.io.Serializable;
+
+public enum CarStatus implements Serializable {
     Available,
     Ordered,
     Renting,

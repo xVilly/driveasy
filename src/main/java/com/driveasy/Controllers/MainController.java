@@ -1,10 +1,21 @@
 package com.driveasy.Controllers;
 
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 import javax.imageio.ImageIO;
 
 import com.driveasy.Core.Cars.Car;
+import com.driveasy.Core.Cars.CarManager;
+import com.driveasy.Core.Cars.LuggageCapacity;
+import com.driveasy.Core.Cars.PickupLocation;
+import com.driveasy.Core.Orders.Order;
+import com.driveasy.Core.Orders.OrderStatus;
 import com.driveasy.Core.Users.User;
 import com.driveasy.Core.Users.UserManager;
 import com.driveasy.Core.Users.UserValidationResult;
@@ -110,6 +121,12 @@ public class MainController implements IController {
     @FXML
     private ScrollPane browserScroll;
 
+    @FXML
+    private ScrollPane ordersScroll;
+
+    @FXML
+    private VBox ordersContent;
+
     public void loadProfile() {
         User user = UserManager.getInstance().GetCurrentUser();
         if (user != null) {
@@ -122,16 +139,99 @@ public class MainController implements IController {
         }
     }
 
+    public void loadOrders() {
+        ordersScroll.setFitToWidth(true);
+        ordersContent.getChildren().clear();
+        User user = UserManager.getInstance().GetCurrentUser();
+        if (user == null) {
+            return;
+        }
+        for (Order order : user.orders) {
+            displayOrderCard(order);
+        }
+    }
+
+    private void displayOrderCard(Order order) {
+        AnchorPane panel = new AnchorPane();
+        panel.setPrefHeight(100.0);
+        panel.setStyle("-fx-background-color: #ffffff;");
+        CornerRadii cornerRadii = new CornerRadii(5);
+        panel.setBorder(new Border(new BorderStroke(Paint.valueOf("#000000"), BorderStrokeStyle.SOLID, cornerRadii, BorderWidths.DEFAULT)));
+        VBox.setMargin(panel, new javafx.geometry.Insets(0.0, 0.0, 5.0, 0.0));
+        
+        Car car = CarManager.getInstance().GetCarById(order.getCarId());
+        if (car == null) {
+            System.out.println("car not found for order " + order.getId() + "");
+            return;
+        }
+        VBox carInfo = new VBox();
+        Label carName = new Label();
+        carName.setText(car.getBrand() + " " + car.getModel());
+        carInfo.getChildren().add(carName);
+
+        Label orderStatus = new Label();
+        orderStatus.setText("Status: " + order.getStatus().toString());
+        carInfo.getChildren().add(orderStatus);
+
+        Label carStartDate = new Label();
+        carStartDate.setText("Start date: " + order.getStartDate());
+        carInfo.getChildren().add(carStartDate);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH);
+        LocalDate startDate = LocalDate.parse(order.getStartDate(), formatter);
+        LocalDate endDate = LocalDate.parse(order.getEndDate(), formatter);
+        Label carDuration = new Label();
+        int daysElapsed = (int)java.time.temporal.ChronoUnit.DAYS.between( startDate , endDate ) ;
+        carDuration.setText("Duration: " + (daysElapsed) + " days");
+        carInfo.getChildren().add(carDuration);
+
+        Label carPrice = new Label();
+        carPrice.setText("Total price: " + (car.getPrice() * daysElapsed) + "$");
+        carInfo.getChildren().add(carPrice);
+
+
+        // leftmost info
+        VBox leftmostInfo = new VBox();
+        VBox rightmostInfo = new VBox();
+        Button cancelButton = new Button();
+        cancelButton.setText("Cancel Order");
+        cancelButton.setLayoutX(14.0);
+        cancelButton.setLayoutY(14.0);
+        cancelButton.setPrefWidth(100.0);
+        cancelButton.setPrefHeight(30.0);
+        cancelButton.setOnAction((event) -> {
+            
+        });
+        if (order.getStatus() != OrderStatus.PENDING) {
+            cancelButton.setDisable(false);
+        } else {
+            cancelButton.setDisable(true);
+        }
+        leftmostInfo.getChildren().add(carName);
+        rightmostInfo.getChildren().add(cancelButton);
+
+        AnchorPane.setLeftAnchor(leftmostInfo, 5.0);
+        AnchorPane.setRightAnchor(rightmostInfo, 5.0);
+        VBox.setMargin(leftmostInfo, new javafx.geometry.Insets(5.0, 0.0, 5.0, 5.0));
+        VBox.setMargin(rightmostInfo, new javafx.geometry.Insets(5.0, 5.0, 5.0, 0.0));
+        leftmostInfo.getChildren().add(carInfo);
+        panel.getChildren().add(leftmostInfo);
+        panel.getChildren().add(rightmostInfo);
+
+        ordersContent.getChildren().add(panel);
+    }
+
     public void displayCarCard(Car car) {
         AnchorPane panel = new AnchorPane();
         panel.setPrefHeight(200.0);
+        panel.setStyle("-fx-background-color: #ffffff;");
         CornerRadii cornerRadii = new CornerRadii(5);
         panel.setBorder(new Border(new BorderStroke(Paint.valueOf("#000000"), BorderStrokeStyle.SOLID, cornerRadii, BorderWidths.DEFAULT)));
         VBox.setMargin(panel, new javafx.geometry.Insets(0.0, 0.0, 5.0, 0.0));
         
         HBox carInfo = new HBox();
         ImageView carImage = new ImageView();
-        carImage.setImage(new Image("/Images/Fiat500.jpg"));
+        carImage.setImage(new Image(car.getImageUrl()));
         carInfo.getChildren().add(carImage);
 
         // leftmost info
@@ -140,6 +240,25 @@ public class MainController implements IController {
         carName.setText(car.getModel() + " " + car.getBrand());
         carName.setLayoutX(14.0);
         carName.setLayoutY(14.0);
+
+        Button rentButton = new Button();
+        rentButton.setText("Rent");
+        rentButton.setLayoutX(14.0);
+        rentButton.setLayoutY(14.0);
+        rentButton.setPrefWidth(100.0);
+        rentButton.setPrefHeight(30.0);
+        rentButton.setOnAction((event) -> {
+            if (!SceneManager.getInstance().isWindowShown("OrderPage")) {
+                Order o = new Order();
+                o.setCarId(car.getId());
+                o.setUserId(UserManager.getInstance().GetCurrentUser().getId());
+                UserManager.getInstance().SetCurrentOrder(o);
+                SceneManager.getInstance().openPopupWindow("OrderPage", "OrderPage", "Rent Car", true, false);
+            } else {
+                SceneManager.getInstance().closePopupWindow("OrderPage");
+            }
+        });
+        leftmostInfo.getChildren().add(rentButton);
         leftmostInfo.getChildren().add(carName);
         AnchorPane.setLeftAnchor(leftmostInfo, 5.0);
         carInfo.getChildren().add(leftmostInfo);
@@ -151,17 +270,26 @@ public class MainController implements IController {
     public void loadCars() {
         browserScroll.setFitToWidth(true);
         browserContent.getChildren().clear();
-        for (int i = 0; i < 10; i++) {
-            Car car = new Car();
-            car.setBrand("BMW");
-            car.setModel("M3");
+        CarManager manager = CarManager.getInstance();
+        manager.InitializeUsingFileManager();
+        manager.Load();
+        for (Car car : manager.GetCars()) {
+            List<PickupLocation> locations = new ArrayList<PickupLocation>();
+            locations.add(PickupLocation.Airport);
+            locations.add(PickupLocation.BusStation);
+            car.setPickupLocation(locations);
+            car.setLuggageCapacity(LuggageCapacity.Medium);
+            car.setPrice((int)(100.0 + (Math.random() * 400.0)));
             displayCarCard(car);
         }
+        manager.Save();
+        System.out.println("saved cars");
     }
 
     public void onActivate() {
         loadProfile();
         loadCars();
+        loadOrders();
     }
 
     @FXML
@@ -172,7 +300,7 @@ public class MainController implements IController {
     @FXML
     void onEditProfile() {
         if (!SceneManager.getInstance().isWindowShown("editProfileWindow")) {
-            SceneManager.getInstance().openPopupWindow("editProfileWindow", "EditProfile", "Edit Profile", true);
+            SceneManager.getInstance().openPopupWindow("editProfileWindow", "EditProfile", "Edit Profile", true, false);
         } else {
             SceneManager.getInstance().closePopupWindow("editProfileWindow");
         }

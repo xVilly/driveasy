@@ -1,1 +1,76 @@
-[{"id":"d4c50873-8788-4c5e-ba8d-200f0748865b","firstName":"Walter","lastName":"White","password":"white123","email":"white@mail.com","address":"address","phone":"phone"},{"id":"79f395b8-5dff-47ac-a958-611707c2a64f","firstName":"Villy","lastName":"Wonka","password":"lol123321","email":"villy@gmail.com","address":"test123","phone":"test15"},{"id":"50402efa-7696-4a0a-bceb-98b9fd593569","firstName":"letwejtwetwe","lastName":"wetwe","password":"lol123321","email":"at23ewr@o2.pl","address":"","phone":""},{"id":"52f1f248-f3fe-4c03-9267-3aad26f76ee8","firstName":"etq","lastName":"","password":"lol123321","email":"teast@o2lpl.","address":"","phone":""},{"id":"6d975f27-7f3b-45dd-b053-66cc10cbd6da","firstName":"etwetw","lastName":"etwetwe","password":"twetweterer","email":"test@o2","address":"twetwe","phone":"twetwe"},{"id":"8068b31d-10a4-424a-853d-b523950451b0","firstName":"Michał","lastName":"Szczerba","password":"lol123321","email":"test@o2.pl","address":"aetetea","phone":"125126423634"}]
+[
+    {
+        "id": "d4c50873-8788-4c5e-ba8d-200f0748865b",
+        "firstName": "Walter",
+        "lastName": "White",
+        "password": "white123",
+        "email": "white@mail.com",
+        "address": "address",
+        "phone": "phone"
+    },
+    {
+        "id": "79f395b8-5dff-47ac-a958-611707c2a64f",
+        "firstName": "Villy",
+        "lastName": "Wonka",
+        "password": "lol123321",
+        "email": "villy@gmail.com",
+        "address": "test123",
+        "phone": "test15"
+    },
+    {
+        "id": "50402efa-7696-4a0a-bceb-98b9fd593569",
+        "firstName": "letwejtwetwe",
+        "lastName": "wetwe",
+        "password": "lol123321",
+        "email": "at23ewr@o2.pl",
+        "address": "",
+        "phone": ""
+    },
+    {
+        "id": "52f1f248-f3fe-4c03-9267-3aad26f76ee8",
+        "firstName": "etq",
+        "lastName": "",
+        "password": "lol123321",
+        "email": "teast@o2lpl.",
+        "address": "",
+        "phone": ""
+    },
+    {
+        "id": "6d975f27-7f3b-45dd-b053-66cc10cbd6da",
+        "firstName": "etwetw",
+        "lastName": "etwetwe",
+        "password": "twetweterer",
+        "email": "test@o2",
+        "address": "twetwe",
+        "phone": "twetwe"
+    },
+    {
+        "id": "8068b31d-10a4-424a-853d-b523950451b0",
+        "firstName": "Michał",
+        "lastName": "Szczerba",
+        "password": "lol123321",
+        "email": "test@o2.pl",
+        "address": "aetetea",
+        "phone": "125126423634",
+        "orders": [
+            {
+                "id": "6f75afc5-10bd-4045-8f4e-3703266fca49",
+                "carId": "d4390cbf-1454-454f-894a-c22b2645dc59",
+                "userId": "8068b31d-10a4-424a-853d-b523950451b0",
+                "startDate": "2024-01-20",
+                "endDate": "2024-01-24",
+                "pickupLocation": "Airport",
+                "status": "PENDING"
+            },
+            {
+                "id": "6a0cb89d-61b1-41ff-b9d6-d85150a3f90b",
+                "carId": "d4390cbf-1454-454f-894a-c22b2645dc59",
+                "userId": "8068b31d-10a4-424a-853d-b523950451b0",
+                "startDate": "2024-02-03",
+                "endDate": "2024-02-17",
+                "pickupLocation": "BusStation",
+                "status": "PENDING"
+            }
+        ]
+    }
+]

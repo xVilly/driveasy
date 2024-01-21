@@ -35,7 +35,7 @@
                <content>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0">
                      <children>
-                        <ScrollPane fx:id="browserScroll" layoutX="-23.0" layoutY="-26.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="5.0">
+                        <ScrollPane fx:id="browserScroll" layoutX="-23.0" layoutY="-26.0" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: ffffff;" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="5.0">
                            <content>
                               <VBox fx:id="browserContent" />
                            </content>
@@ -332,9 +332,20 @@
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <Label layoutX="286.0" layoutY="177.0" text="Orders" />
-                     </children>
-                  </AnchorPane>
+                        <Label text="Your active and past orders" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+                           <font>
+                              <Font name="JetBrains Mono Medium" size="18.0" />
+                           </font>
+                        </Label>
+                        <ScrollPane fx:id="ordersScroll" style="-fx-background-color: ffffff;" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="40.0">
+                           <content>
+                              <VBox fx:id="ordersContent" />
+                           </content>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </ScrollPane>
+                     </children></AnchorPane>
                </content>
             </Tab>
         </tabs>

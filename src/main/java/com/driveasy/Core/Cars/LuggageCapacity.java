@@ -1,6 +1,8 @@
 package com.driveasy.Core.Cars;
 
-public enum LuggageCapacity {
+import java.io.Serializable;
+
+public enum LuggageCapacity implements Serializable {
     Small,
     Medium,
     Big

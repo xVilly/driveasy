@@ -1,7 +1,11 @@
 package com.driveasy.Core.Users;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+
+import com.driveasy.Core.Orders.Order;
 
 
 public class User implements Serializable {
@@ -12,6 +16,7 @@ public class User implements Serializable {
     private String email;
     private String address;
     private String phone;
+    public List<Order> orders;
 
     public User(String firstName, String lastName, String password, String email, String address, String phone) {
         this.id = java.util.UUID.randomUUID();
@@ -21,6 +26,7 @@ public class User implements Serializable {
         this.email = email;
         this.address = address;
         this.phone = phone;
+        orders = new ArrayList<Order>();
     }
 
     public String getFirstName() {
@@ -77,5 +83,11 @@ public class User implements Serializable {
 
     public void setId(UUID id) {
         this.id = id;
+    }
+
+    public void AddOrder(Order order) {
+        if (orders == null)
+            orders = new ArrayList<Order>();
+        orders.add(order);
     }
 }

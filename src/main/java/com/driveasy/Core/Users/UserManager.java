@@ -2,6 +2,7 @@ package com.driveasy.Core.Users;
 
 import java.util.ArrayList;
 
+import com.driveasy.Core.Orders.Order;
 import com.driveasy.Database.FileManager;
 import com.driveasy.Database.UserData;
 import com.driveasy.Tools.LoggedError;
@@ -22,6 +23,7 @@ public class UserManager {
     }
 
     private User currentUser = null;
+    private Order currentOrder = null;
 
     public User GetCurrentUser() {
         return currentUser;
@@ -29,6 +31,14 @@ public class UserManager {
 
     public void SetCurrentUser(User user) {
         currentUser = user;
+    }
+
+    public Order GetCurrentOrder() {
+        return currentOrder;
+    }
+
+    public void SetCurrentOrder(Order order) {
+        currentOrder = order;
     }
 
     private class UserManagerError extends LoggedError {
@@ -127,7 +137,6 @@ public class UserManager {
                 return;
             }
         }
-        
     }
 
     public UserValidationResult ValidateUserInfo(User user) {
@@ -164,5 +173,20 @@ public class UserManager {
                 return true;
         }
         return false;
+    }
+
+    public void PlaceOrder(Order order) {
+        if (!loaded) {
+            new UserManagerError("UserManager", "User manager not loaded", "User manager must be loaded before placing an order").Handle();
+            return;
+        }
+        for (User user : users) {
+            if (user.getId().equals(order.getUserId())) {
+                user.orders.add(order);
+                if (forceSave)
+                    Save();
+                return;
+            }
+        }
     }
 }

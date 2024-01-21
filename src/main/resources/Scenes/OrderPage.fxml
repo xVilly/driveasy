@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.effect.InnerShadow?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.text.Font?>
+
+<FlowPane alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: ffffff;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.driveasy.Controllers.OrderController">
+   <children>
+      <VBox alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity">
+         <children>
+            <ImageView fx:id="carImage" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+               <VBox.margin>
+                  <Insets top="15.0" />
+               </VBox.margin>
+            </ImageView>
+            <Label fx:id="carName" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="200.0" text="Car Model&amp;Brand" textAlignment="CENTER" wrapText="true">
+               <font>
+                  <Font name="JetBrains Mono Medium" size="18.0" />
+               </font>
+            </Label>
+            <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="200.0" text="Select starting date" textAlignment="CENTER" wrapText="true">
+               <font>
+                  <Font name="JetBrains Mono Medium" size="14.0" />
+               </font>
+               <VBox.margin>
+                  <Insets top="15.0" />
+               </VBox.margin>
+            </Label>
+            <DatePicker fx:id="datePicker" onAction="#onChangeDate" promptText="Starting date" />
+            <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="200.0" text="Select pickup location" textAlignment="CENTER" wrapText="true">
+               <font>
+                  <Font name="JetBrains Mono Medium" size="14.0" />
+               </font>
+               <VBox.margin>
+                  <Insets top="8.0" />
+               </VBox.margin>
+            </Label>
+            <ChoiceBox fx:id="locationPicker" prefWidth="150.0" />
+            <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="200.0" text="Duration" textAlignment="CENTER" wrapText="true">
+               <font>
+                  <Font name="JetBrains Mono Medium" size="14.0" />
+               </font>
+               <VBox.margin>
+                  <Insets top="8.0" />
+               </VBox.margin>
+            </Label>
+            <Slider fx:id="durationSlider" blockIncrement="1.0" max="14.0" min="1.0" value="1.0" />
+            <Label fx:id="durationLabel" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="200.0" text="1 day" textAlignment="CENTER" textFill="#838383" wrapText="true">
+               <font>
+                  <Font name="JetBrains Mono Medium" size="14.0" />
+               </font>
+            </Label>
+            <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="200.0" text="Estimated total price" textAlignment="CENTER" wrapText="true">
+               <font>
+                  <Font name="JetBrains Mono Medium" size="14.0" />
+               </font>
+               <VBox.margin>
+                  <Insets top="8.0" />
+               </VBox.margin>
+            </Label>
+            <Label fx:id="priceLabel" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="200.0" text="0.00 $" textAlignment="CENTER" textFill="#757575" wrapText="true">
+               <font>
+                  <Font name="JetBrains Mono Medium" size="14.0" />
+               </font>
+            </Label>
+            <Label fx:id="errorLabel" alignment="CENTER" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="200.0" text="Error" textAlignment="CENTER" visible="false" wrapText="true" />
+            <Button fx:id="buttonConfirm" mnemonicParsing="false" onAction="#onConfirm" text="Confirm Rental">
+               <font>
+                  <Font name="JetBrains Mono ExtraBold" size="16.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+               <textFill>
+                  <LinearGradient endX="0.04739336492891" endY="1.0">
+                     <stops>
+                        <Stop>
+                           <color>
+                              <Color />
+                           </color>
+                        </Stop>
+                        <Stop offset="1.0">
+                           <color>
+                              <Color red="0.46052631735801697" green="0.46052631735801697" blue="0.46052631735801697" />
+                           </color>
+                        </Stop>
+                     </stops>
+                  </LinearGradient>
+               </textFill>
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+            </Button>
+            <Button fx:id="buttonGoBack" mnemonicParsing="false" onAction="#onGoBack" style="-fx-background-color: rgba(0,0,0,0);" text="Go Back" textFill="#29615c">
+               <font>
+                  <Font name="JetBrains Mono Light" size="12.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin>
+            </Button>
+         </children>
+      </VBox>
+   </children>
+   <effect>
+      <InnerShadow />
+   </effect>
+</FlowPane>

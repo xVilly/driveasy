@@ -8,6 +8,8 @@ public class Car implements Serializable {
     private UUID id;
     private String model;
     private String brand;
+    private String imageUrl;
+    
     private List<CarCategory> category;
     private List<TransmissionType> transmissionType;
     private List<PickupLocation> pickupLocation;
@@ -100,5 +102,13 @@ public class Car implements Serializable {
     }
     public void setStatus(CarStatus status) {
         this.status = status;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

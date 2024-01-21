@@ -15,6 +15,7 @@ public class SceneManager {
         add("RegisterPage");
         add("MainPage");
         add("EditProfile");
+        add("OrderPage");
     }};
 
     public static final String startingScene = "LoginPage";
@@ -67,7 +68,7 @@ public class SceneManager {
         controller.onActivate();
     }
 
-    public void openPopupWindow(String windowName, String rootName, String title, boolean alwaysOnTop) {
+    public void openPopupWindow(String windowName, String rootName, String title, boolean alwaysOnTop, boolean resizable) {
         if (isWindowShown(windowName))
             return;
         if (isWindowLoaded(windowName))
@@ -82,6 +83,7 @@ public class SceneManager {
         openWindows.put(windowName, s);
         s.setScene(new Scene(root));
         s.setAlwaysOnTop(alwaysOnTop);
+        s.setResizable(resizable);
         s.setTitle(title);
         controller.onActivate();
         s.show();

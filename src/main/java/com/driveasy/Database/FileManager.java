@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import com.driveasy.Core.Cars.Car;
 import com.driveasy.Core.Users.User;
 import com.driveasy.Tools.Error;
 import com.driveasy.Tools.LoggedError;
@@ -25,7 +26,7 @@ import com.google.gson.reflect.TypeToken;
  * File Manager represents database connection (reading and writing data to a text file)
  * Supports json serialization
  */
-public class FileManager implements UserData {
+public class FileManager implements UserData, CarData {
     private static final String dataPath = "data";
     private static final String logPath = "logs";
 
@@ -128,7 +129,7 @@ public class FileManager implements UserData {
 
     @Override
     public void SaveUsers(ArrayList<User> users) {
-        String path = GetJSONFilePath(destinationName);
+        String path = GetJSONFilePath(userDestinationName);
         try {
             String json = gson.toJson(users);
             CleanFile(path);
@@ -141,7 +142,7 @@ public class FileManager implements UserData {
 
     @Override
     public ArrayList<User> GetUsers() {
-        String path = GetJSONFilePath(destinationName);
+        String path = GetJSONFilePath(userDestinationName);
         try {
             String rawData = ReadFileAsString(path);
             ArrayList<User> data = gson.fromJson(rawData, new TypeToken<List<User>>(){}.getType());
@@ -153,5 +154,34 @@ public class FileManager implements UserData {
             error.Handle();
         }
         return new ArrayList<User>();
+    }
+
+    @Override
+    public void SaveCars(ArrayList<Car> cars) {
+        String path = GetJSONFilePath(carDestinationName);
+        try {
+            String json = gson.toJson(cars);
+            CleanFile(path);
+            WriteFile(path, json);
+        } catch (Exception e) {
+            FileManagerError error = new FileManagerError("SaveCars", "Failed to save cars to a text file.", e.getMessage());
+            error.Handle();
+        }
+    }
+
+    @Override
+    public ArrayList<Car> GetCars() {
+        String path = GetJSONFilePath(carDestinationName);
+        try {
+            String rawData = ReadFileAsString(path);
+            ArrayList<Car> data = gson.fromJson(rawData, new TypeToken<List<Car>>(){}.getType());
+            if (data == null) // for some reason gson.fromJson returns null instead of throwing an exception
+                throw new JsonIOException("Failed to parse json.");
+            return data;
+        } catch (Exception e) {
+            FileManagerError error = new FileManagerError("GetCars", "Failed to read cars from a text file.", e.getMessage());
+            error.Handle();
+        }
+        return new ArrayList<Car>();
     }
 }
