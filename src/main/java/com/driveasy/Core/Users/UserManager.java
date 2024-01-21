@@ -1,6 +1,10 @@
 package com.driveasy.Core.Users;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 import com.driveasy.Core.Orders.Order;
 import com.driveasy.Database.FileManager;
@@ -39,6 +43,18 @@ public class UserManager {
 
     public void SetCurrentOrder(Order order) {
         currentOrder = order;
+    }
+
+    public boolean IsLoaded() {
+        return loaded;
+    }
+
+    public List<User> GetUsers() {
+        if (!loaded) {
+            new UserManagerError("UserManager", "User manager not loaded", "User manager must be loaded before getting data").Handle();
+            return null;
+        }
+        return users;
     }
 
     private class UserManagerError extends LoggedError {
@@ -91,18 +107,26 @@ public class UserManager {
         users.add(user);
         if (forceSave)
             Save();
+        FileManager manager = FileManager.getInstance();
+        manager.WriteFile("logs/actions.txt", "["+LocalDateTime.now()+"] User "+user.getEmail()+" has registered. Assigned id: "+user.getId());
         return UserValidationResult.Valid;
     }
 
     public void RemoveUser(User user) {
+        if (!loaded) {
+            new UserManagerError("UserManager", "User manager not loaded", "User manager must be loaded before removing a user").Handle();
+            return;
+        }
         users.remove(user);
         if (forceSave)
             Save();
+        FileManager manager = FileManager.getInstance();
+        manager.WriteFile("logs/actions.txt", "["+LocalDateTime.now()+"] User "+user.getEmail()+" has been deleted.");
     }
 
-    public User GetUserById(String id) {
+    public User GetUserById(UUID id) {
         for (User user : users) {
-            if (user.getId().equals(java.util.UUID.fromString(id)))
+            if (user.getId().equals(id))
                 return user;
         }
         return null;
@@ -134,6 +158,8 @@ public class UserManager {
                 users.add(newUser);
                 if (forceSave)
                     Save();
+                FileManager manager = FileManager.getInstance();
+                manager.WriteFile("logs/actions.txt", "["+LocalDateTime.now()+"] User "+user.getEmail()+" has been updated.");
                 return;
             }
         }
@@ -185,6 +211,8 @@ public class UserManager {
                 user.orders.add(order);
                 if (forceSave)
                     Save();
+                FileManager manager = FileManager.getInstance();
+                manager.WriteFile("logs/actions.txt", "["+LocalDateTime.now()+"] User "+user.getEmail()+" has placed order id "+order.getId()+"");
                 return;
             }
         }

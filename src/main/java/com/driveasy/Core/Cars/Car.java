@@ -1,6 +1,7 @@
 package com.driveasy.Core.Cars;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,6 +24,9 @@ public class Car implements Serializable {
 
     public Car() {
         this.id = java.util.UUID.randomUUID();
+        this.transmissionType = new ArrayList<TransmissionType>();
+        this.pickupLocation = new ArrayList<PickupLocation>();
+        this.category = new ArrayList<CarCategory>();
     }
 
     public UUID getId() {

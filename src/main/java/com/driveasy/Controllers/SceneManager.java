@@ -16,6 +16,7 @@ public class SceneManager {
         add("MainPage");
         add("EditProfile");
         add("OrderPage");
+        add("ManagerPanel");
     }};
 
     public static final String startingScene = "LoginPage";

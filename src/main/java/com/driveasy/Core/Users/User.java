@@ -16,6 +16,9 @@ public class User implements Serializable {
     private String email;
     private String address;
     private String phone;
+    private boolean isAdmin;
+    
+
     public List<Order> orders;
 
     public User(String firstName, String lastName, String password, String email, String address, String phone) {
@@ -89,5 +92,13 @@ public class User implements Serializable {
         if (orders == null)
             orders = new ArrayList<Order>();
         orders.add(order);
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean isAdmin) {
+        this.isAdmin = isAdmin;
     }
 }

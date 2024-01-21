@@ -1,5 +1,6 @@
 package com.driveasy.Core.Cars;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -100,5 +101,17 @@ public class CarManager {
                 return;
             }
         }
+    }
+
+    public void DeleteCar(Car car) {
+        cars.remove(car);
+        if (forceSave)
+            Save();
+        FileManager manager = FileManager.getInstance();
+        manager.WriteFile("logs/actions.txt", "["+LocalDate.now()+"] Car "+car.getId()+" has been deleted (name: "+car.getBrand()+" "+car.getModel()+")");
+    }
+
+    public boolean IsLoaded() {
+        return loaded;
     }
 }

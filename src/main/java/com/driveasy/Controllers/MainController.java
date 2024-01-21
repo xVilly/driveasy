@@ -12,6 +12,7 @@ import javax.imageio.ImageIO;
 
 import com.driveasy.Core.Cars.Car;
 import com.driveasy.Core.Cars.CarManager;
+import com.driveasy.Core.Cars.CarStatus;
 import com.driveasy.Core.Cars.LuggageCapacity;
 import com.driveasy.Core.Cars.PickupLocation;
 import com.driveasy.Core.Orders.Order;
@@ -40,6 +41,7 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
+import javafx.scene.text.Font;
 
 public class MainController implements IController {
     @FXML
@@ -189,23 +191,36 @@ public class MainController implements IController {
         carPrice.setText("Total price: " + (car.getPrice() * daysElapsed) + "$");
         carInfo.getChildren().add(carPrice);
 
+        Label pickupLocation = new Label();
+        pickupLocation.setText("Pickup location: "+ order.getPickupLocation());
+        carInfo.getChildren().add(pickupLocation);
+
 
         // leftmost info
         VBox leftmostInfo = new VBox();
         VBox rightmostInfo = new VBox();
         Button cancelButton = new Button();
         cancelButton.setText("Cancel Order");
-        cancelButton.setLayoutX(14.0);
-        cancelButton.setLayoutY(14.0);
         cancelButton.setPrefWidth(100.0);
         cancelButton.setPrefHeight(30.0);
         cancelButton.setOnAction((event) -> {
-            
+            User currentUser = UserManager.getInstance().GetCurrentUser();
+            if (currentUser == null) {
+                return;
+            }
+            for (Order o : currentUser.orders) {
+                if (o.getId().equals(order.getId())) {
+                    o.setStatus(OrderStatus.CANCELLED);
+                    break;
+                }
+            }
+            UserManager.getInstance().Save();
+            loadOrders();
         });
         if (order.getStatus() != OrderStatus.PENDING) {
-            cancelButton.setDisable(false);
-        } else {
             cancelButton.setDisable(true);
+        } else {
+            cancelButton.setDisable(false);
         }
         leftmostInfo.getChildren().add(carName);
         rightmostInfo.getChildren().add(cancelButton);
@@ -229,20 +244,94 @@ public class MainController implements IController {
         panel.setBorder(new Border(new BorderStroke(Paint.valueOf("#000000"), BorderStrokeStyle.SOLID, cornerRadii, BorderWidths.DEFAULT)));
         VBox.setMargin(panel, new javafx.geometry.Insets(0.0, 0.0, 5.0, 0.0));
         
-        HBox carInfo = new HBox();
+        AnchorPane carInfo = new AnchorPane();
+        AnchorPane.setLeftAnchor(carInfo, 2.0);
+        AnchorPane.setRightAnchor(carInfo, 2.0);
+        AnchorPane.setBottomAnchor(carInfo, 2.0);
+        AnchorPane.setTopAnchor(carInfo, 2.0);
         ImageView carImage = new ImageView();
         carImage.setImage(new Image(car.getImageUrl()));
+        HBox.setMargin(carImage, new javafx.geometry.Insets(5.0, 5.0, 5.0, 5.0));
+        AnchorPane.setLeftAnchor(carImage, 5.0);
+        AnchorPane.setTopAnchor(carImage, 5.0);
         carInfo.getChildren().add(carImage);
+
+        AnchorPane carDetails = new AnchorPane();
+        AnchorPane.setLeftAnchor(carDetails, carImage.getImage().getWidth() + 5.0);
+        AnchorPane.setRightAnchor(carDetails, 0.0);
+        AnchorPane.setBottomAnchor(carDetails, 0.0);
+        AnchorPane.setTopAnchor(carDetails, 0.0);
+        
 
         // leftmost info
         VBox leftmostInfo = new VBox();
+        VBox leftmostBottomInfo = new VBox();
+        VBox rightmostInfo = new VBox();
+        VBox rightmostBottomInfo = new VBox();
         Label carName = new Label();
-        carName.setText(car.getModel() + " " + car.getBrand());
-        carName.setLayoutX(14.0);
-        carName.setLayoutY(14.0);
+        carName.setText(car.getBrand() + " " + car.getModel());
+        carName.setFont(new Font("JetBrains Mono Medium", 24.0));
+        leftmostInfo.getChildren().add(carName);
+
+        Label seatsDoors = new Label();
+        seatsDoors.setText(car.getSeats() + " seats, " + car.getDoors() + " doors");
+        seatsDoors.setFont(new Font("JetBrains Mono Medium", 14.0));
+        seatsDoors.setTextFill(Paint.valueOf("#6e6e6e"));
+        leftmostInfo.getChildren().add(seatsDoors);
+
+        Label luggageCapacity = new Label();
+        luggageCapacity.setText("Luggage capacity: " + car.getLuggageCapacity().toString());
+        luggageCapacity.setFont(new Font("JetBrains Mono Medium", 12.0));
+        luggageCapacity.setTextFill(Paint.valueOf("#6e6e6e"));
+        leftmostInfo.getChildren().add(luggageCapacity);
+
+        Label transmissionType = new Label();
+        String transmissionTypeString = "";
+        for (int i = 0; i < car.getTransmissionType().size(); i++) {
+            transmissionTypeString += car.getTransmissionType().get(i).toString();
+            if (i != car.getTransmissionType().size() - 1) {
+                transmissionTypeString += ", ";
+            }
+        }
+        transmissionType.setText("Transmission: " + transmissionTypeString.toLowerCase());
+        transmissionType.setFont(new Font("JetBrains Mono Medium", 12.0));
+        transmissionType.setTextFill(Paint.valueOf("#6e6e6e"));
+        leftmostInfo.getChildren().add(transmissionType);
+
+        Label pickupLocation = new Label();
+        String pickupLocationString = "";
+        for (int i = 0; i < car.getPickupLocation().size(); i++) {
+            pickupLocationString += car.getPickupLocation().get(i).toString();
+            if (i != car.getPickupLocation().size() - 1) {
+                pickupLocationString += ", ";
+            }
+        }
+        pickupLocation.setText("Available pickup locations: " + pickupLocationString.toLowerCase());
+        pickupLocation.setFont(new Font("JetBrains Mono Medium", 12.0));
+        pickupLocation.setTextFill(Paint.valueOf("#6e6e6e"));
+        leftmostInfo.getChildren().add(pickupLocation);
+
+        Label distanceLimit = new Label();
+        distanceLimit.setText("Distance limit: " + car.getDistanceLimit() + " km");
+        distanceLimit.setFont(new Font("JetBrains Mono Medium", 12.0));
+        distanceLimit.setTextFill(Paint.valueOf("#6e6e6e"));
+        leftmostInfo.getChildren().add(distanceLimit);
+
+        Label priceLabel = new Label();
+        priceLabel.setText("Price: " + car.getPrice() + "$ per day");
+        priceLabel.setFont(new Font("JetBrains Mono Medium", 16.0));
+        priceLabel.setTextFill(Paint.valueOf("#4f4e4e"));
+        leftmostBottomInfo.getChildren().add(priceLabel);
+
+        Label ratingLabel = new Label();
+        ratingLabel.setText("Rating: " + car.getRating() + "⭐ / 5⭐");
+        ratingLabel.setFont(new Font("JetBrains Mono Medium", 14.0));
+        ratingLabel.setTextFill(Paint.valueOf("#6e6e6e"));
+        leftmostBottomInfo.getChildren().add(ratingLabel);
+
 
         Button rentButton = new Button();
-        rentButton.setText("Rent");
+        rentButton.setText("Rent Car");
         rentButton.setLayoutX(14.0);
         rentButton.setLayoutY(14.0);
         rentButton.setPrefWidth(100.0);
@@ -258,10 +347,19 @@ public class MainController implements IController {
                 SceneManager.getInstance().closePopupWindow("OrderPage");
             }
         });
-        leftmostInfo.getChildren().add(rentButton);
-        leftmostInfo.getChildren().add(carName);
+        rightmostBottomInfo.getChildren().add(rentButton);
+        
         AnchorPane.setLeftAnchor(leftmostInfo, 5.0);
-        carInfo.getChildren().add(leftmostInfo);
+        AnchorPane.setBottomAnchor(leftmostBottomInfo, 5.0);
+        AnchorPane.setLeftAnchor(leftmostBottomInfo, 5.0);
+        AnchorPane.setRightAnchor(rightmostInfo, 5.0);
+        AnchorPane.setBottomAnchor(rightmostBottomInfo, 5.0);
+        AnchorPane.setRightAnchor(rightmostBottomInfo, 5.0);
+        carDetails.getChildren().add(leftmostInfo);
+        carDetails.getChildren().add(leftmostBottomInfo);
+        carDetails.getChildren().add(rightmostInfo);
+        carDetails.getChildren().add(rightmostBottomInfo);
+        carInfo.getChildren().add(carDetails);
         panel.getChildren().add(carInfo);
 
         browserContent.getChildren().add(panel);
@@ -280,6 +378,7 @@ public class MainController implements IController {
             car.setPickupLocation(locations);
             car.setLuggageCapacity(LuggageCapacity.Medium);
             car.setPrice((int)(100.0 + (Math.random() * 400.0)));
+            car.setStatus(CarStatus.Available);
             displayCarCard(car);
         }
         manager.Save();
@@ -290,6 +389,10 @@ public class MainController implements IController {
         loadProfile();
         loadCars();
         loadOrders();
+
+        if (!SceneManager.getInstance().isWindowShown("ManagerPanel")) {
+            SceneManager.getInstance().openPopupWindow("ManagerPanel", "ManagerPanel", "Manager Panel", false, true);
+        }
     }
 
     @FXML
