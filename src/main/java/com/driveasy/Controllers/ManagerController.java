@@ -6,11 +6,13 @@ import java.util.Locale;
 
 import com.driveasy.Core.Cars.Car;
 import com.driveasy.Core.Cars.CarManager;
+import com.driveasy.Core.Cars.CarStatus;
 import com.driveasy.Core.Orders.Order;
 import com.driveasy.Core.Orders.OrderStatus;
 import com.driveasy.Core.Users.User;
 import com.driveasy.Core.Users.UserManager;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -76,10 +78,54 @@ public class ManagerController implements IController {
         removeButton.setOnAction((event) -> {
             CarManager.getInstance().DeleteCar(car);
             LoadCars();
+            MainController _mainController = (MainController)SceneManager.getInstance().getController("MainPage");
+            if (_mainController != null) {
+                _mainController.loadCars();
+                _mainController.loadOrders();
+            }
         });
         VBox.setMargin(removeButton, new javafx.geometry.Insets(5.0, 5.0, 5.0, 0.0));
+
+        Button repairButton = new Button();
+        repairButton.setText("Repair");
+        repairButton.setPrefWidth(70.0);
+        repairButton.setPrefHeight(20.0);
+        repairButton.setOnAction((event) -> {
+            car.setStatus(CarStatus.Repairing);
+            CarManager.getInstance().UpdateCarById(car.getId(), car);
+            LoadCars();
+            MainController _mainController = (MainController)SceneManager.getInstance().getController("MainPage");
+            if (_mainController != null) {
+                _mainController.loadCars();
+                _mainController.loadOrders();
+            }
+        });
+        VBox.setMargin(repairButton, new javafx.geometry.Insets(5.0, 5.0, 5.0, 0.0));
+
+        Button bringButton = new Button();
+        bringButton.setText("Bring Back");
+        bringButton.setPrefWidth(70.0);
+        bringButton.setPrefHeight(20.0);
+        bringButton.setOnAction((event) -> {
+            car.setStatus(CarStatus.Available);
+            CarManager.getInstance().UpdateCarById(car.getId(), car);
+            LoadCars();
+            MainController _mainController = (MainController)SceneManager.getInstance().getController("MainPage");
+            if (_mainController != null) {
+                _mainController.loadCars();
+                _mainController.loadOrders();
+            }
+        });
+        VBox.setMargin(bringButton, new javafx.geometry.Insets(5.0, 5.0, 5.0, 0.0));
+
+        if (car.getStatus() != CarStatus.Available)
+            repairButton.setDisable(true);
         
         rightmostInfo.getChildren().add(removeButton);
+        if (car.getStatus() == CarStatus.Repairing)
+            rightmostInfo.getChildren().add(bringButton);
+        else
+            rightmostInfo.getChildren().add(repairButton);
 
         AnchorPane.setLeftAnchor(leftmostInfo, 5.0);
         AnchorPane.setRightAnchor(rightmostInfo, 5.0);
@@ -182,7 +228,18 @@ public class ManagerController implements IController {
             if (u == null)
                 return;
             u.orders.remove(order);
+            if (car != null) {
+                car.setStatus(CarStatus.Available);
+                CarManager.getInstance().UpdateCarById(car.getId(), car);
+            }
+            UserManager.getInstance().Save();
             LoadOrders();
+            LoadCars();
+            MainController _mainController = (MainController)SceneManager.getInstance().getController("MainPage");
+            if (_mainController != null) {
+                _mainController.loadCars();
+                _mainController.loadOrders();
+            }
         });
         VBox.setMargin(removeButton, new javafx.geometry.Insets(5.0, 5.0, 5.0, 0.0));
         
@@ -203,7 +260,15 @@ public class ManagerController implements IController {
                 }
             }
             UserManager.getInstance().Save();
+            car.setStatus(CarStatus.Renting);
+            CarManager.getInstance().UpdateCarById(car.getId(), car);
             LoadOrders();
+            LoadCars();
+            MainController _mainController = (MainController)SceneManager.getInstance().getController("MainPage");
+            if (_mainController != null) {
+                _mainController.loadCars();
+                _mainController.loadOrders();
+            }
         });
         VBox.setMargin(acceptButton, new javafx.geometry.Insets(0.0, 5.0, 5.0, 0.0));
         acceptButton.setDisable(order.getStatus() != OrderStatus.PENDING);
@@ -224,8 +289,17 @@ public class ManagerController implements IController {
                 }
             }
             UserManager.getInstance().Save();
+            car.setStatus(CarStatus.Available);
+            CarManager.getInstance().UpdateCarById(car.getId(), car);
             LoadOrders();
+            LoadCars();
+            MainController _mainController = (MainController)SceneManager.getInstance().getController("MainPage");
+            if (_mainController != null) {
+                _mainController.loadCars();
+                _mainController.loadOrders();
+            }
         });
+
         VBox.setMargin(rejectButton, new javafx.geometry.Insets(0.0, 5.0, 5.0, 0.0));
         rejectButton.setDisable(order.getStatus() != OrderStatus.PENDING);
         rightmostInfo.getChildren().add(rejectButton);
@@ -241,7 +315,7 @@ public class ManagerController implements IController {
         ordersContent.getChildren().add(panel);
     }
 
-    private void LoadCars() {
+    public void LoadCars() {
         carsContent.getChildren().clear();
         carsScroll.setFitToWidth(true);
         CarManager manager = CarManager.getInstance();
@@ -252,7 +326,7 @@ public class ManagerController implements IController {
         }
     }
 
-    private void LoadUsers() {
+    public void LoadUsers() {
         usersContent.getChildren().clear();
         usersScroll.setFitToWidth(true);
         UserManager manager = UserManager.getInstance();
@@ -263,7 +337,7 @@ public class ManagerController implements IController {
         }
     }
 
-    private void LoadOrders() {
+    public void LoadOrders() {
         ordersContent.getChildren().clear();
         ordersScroll.setFitToWidth(true);
         UserManager manager = UserManager.getInstance();
@@ -283,6 +357,15 @@ public class ManagerController implements IController {
         LoadCars();
         LoadOrders();
         LoadUsers();
+    }
+
+    @FXML
+    void onAddCar(ActionEvent event) {
+        if (!SceneManager.getInstance().isWindowShown("AddCar")) {
+            SceneManager.getInstance().openPopupWindow("AddCar", "AddCar", "Add Car", true, false);
+        } else {
+            SceneManager.getInstance().closePopupWindow("AddCar");
+        }
     }
 
 }

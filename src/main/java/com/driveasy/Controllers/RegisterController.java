@@ -66,39 +66,40 @@ public class RegisterController implements IController {
             return;
         }
         UserManager manager = UserManager.getInstance();
-        User newUser = new User(textValueFirstName.getText(), textValueLastName.getText(), textValuePassword.getText(),
+        String salt = manager.randomString(16);
+        User newUser = new User(textValueFirstName.getText(), textValueLastName.getText(), manager.hashSHA512(textValuePassword.getText(), salt), salt,
                 textValueEmail.getText(), textValueAddress.getText(), textValuePhone.getText());
-        UserValidationResult result = manager.RegisterUser(newUser);
+        UserValidationResult result = manager.RegisterUser(newUser, textValuePassword.getText());
         errorLabel.setVisible(true);
         errorLabel.setDisable(false);
         switch (result) {
             case InvalidEmail:
                 errorLabel.setText("Email address is not formatted properly.");
-                errorLabel.setTextFill(Paint.valueOf("#ff0000"));
+                errorLabel.setTextFill(Paint.valueOf("#d1baf7"));
                 break;
             case PasswordTooShort:
                 errorLabel.setText("Password should be at least 8 characters long.");
-                errorLabel.setTextFill(Paint.valueOf("#ff0000"));
+                errorLabel.setTextFill(Paint.valueOf("#d1baf7"));
                 break;
             case PasswordTooLong:
                 errorLabel.setText("Password should be at most 128 characters long.");
-                errorLabel.setTextFill(Paint.valueOf("#ff0000"));
+                errorLabel.setTextFill(Paint.valueOf("#d1baf7"));
                 break;
             case NameLengthExceeded:
                 errorLabel.setText("Name should be at most 128 characters long.");
-                errorLabel.setTextFill(Paint.valueOf("#ff0000"));
+                errorLabel.setTextFill(Paint.valueOf("#d1baf7"));
                 break;
             case InfoLengthExceeded:
                 errorLabel.setText("Info should be at most 256 characters long.");
-                errorLabel.setTextFill(Paint.valueOf("#ff0000"));
+                errorLabel.setTextFill(Paint.valueOf("#d1baf7"));
                 break;
             case EmailAlreadyExists:
                 errorLabel.setText("User with that email address already exists.");
-                errorLabel.setTextFill(Paint.valueOf("#ff0000"));
+                errorLabel.setTextFill(Paint.valueOf("#d1baf7"));
                 break;
             case Error:
                 errorLabel.setText("An error occured while creating the account.");
-                errorLabel.setTextFill(Paint.valueOf("#ff0000"));
+                errorLabel.setTextFill(Paint.valueOf("#d1baf7"));
                 break;
             default:
             case Valid:

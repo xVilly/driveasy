@@ -8,7 +8,6 @@ import javafx.stage.Stage;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.driveasy.Database.ConnectionManager;
 import com.driveasy.Database.FileManager;
 import com.driveasy.Database.UserData;
 
@@ -30,18 +29,10 @@ public class App extends Application {
         primaryStage.show();
     }
 
-    @Override
-    public void stop() {
-        ConnectionManager manager = ConnectionManager.getInstance();
-        manager.disconnect();
-    }
-
     public static void main(String[] args) {
         UserManager userManager = UserManager.getInstance();
         userManager.InitializeUsingFileManager();
         userManager.Load();
-        User u = new User("Walter", "White", "white123", "white@mail.com", "address", "phone");
-        System.out.println(userManager.RegisterUser(u));
         launch();
     }
 }

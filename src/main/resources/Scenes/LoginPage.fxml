@@ -65,7 +65,7 @@
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </VBox.margin>
             </Label>
-            <TextField fx:id="textValueEmail" alignment="CENTER" prefHeight="25.0" prefWidth="227.0" promptText="Email">
+            <TextField fx:id="textValueEmail" alignment="CENTER" onAction="#onLogin" prefHeight="25.0" prefWidth="227.0" promptText="Email">
                <font>
                   <Font name="JetBrains Mono Medium" size="12.0" />
                </font>
@@ -73,7 +73,7 @@
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </VBox.margin>
             </TextField>
-            <PasswordField fx:id="textValuePassword" alignment="CENTER" promptText="Password">
+            <PasswordField fx:id="textValuePassword" alignment="CENTER" onAction="#onLogin" promptText="Password">
                <VBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </VBox.margin>

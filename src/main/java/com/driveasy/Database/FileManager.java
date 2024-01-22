@@ -33,6 +33,9 @@ public class FileManager implements UserData, CarData {
     private static FileManager instance = null;
     private Gson gson;
 
+    JsonInteraction<User> userJsonInteraction; 
+    JsonInteraction<Car> carJsonInteraction;
+
     private class FileManagerError extends Error {
         public FileManagerError(String source, String message, String exception) {
             super(source, message, exception);
@@ -53,6 +56,65 @@ public class FileManager implements UserData, CarData {
 
     public FileManager() {
         gson = new Gson();
+
+        // Klasa anonimowa do obsługi zapisu/odczytu użytkowników, implementuje interfejs JsonInteraction dla klasy User
+        userJsonInteraction = new JsonInteraction<User>() {
+            @Override
+            public void Save(Object object, String destination) {
+                try {
+                    String json = gson.toJson(object);
+                    CleanFile(destination);
+                    WriteFile(destination, json);
+                } catch (Exception e) {
+                    FileManagerError error = new FileManagerError("SaveUsers", "Failed to save users to a text file.", e.getMessage());
+                    error.Handle();
+                }
+            }
+
+            @Override
+            public ArrayList<User> Get(String destination) {
+                try {
+                    String rawData = ReadFileAsString(destination);
+                    ArrayList<User> data = gson.fromJson(rawData, new TypeToken<List<User>>(){}.getType());
+                    if (data == null) // for some reason gson.fromJson returns null instead of throwing an exception
+                        throw new JsonIOException("Failed to parse json.");
+                    return data;
+                } catch (Exception e) {
+                    FileManagerError error = new FileManagerError("GetUsers", "Failed to read users from a text file.", e.getMessage());
+                    error.Handle();
+                }
+                return new ArrayList<User>();
+            }
+        };
+        // Klasa anonimowa do obsługi zapisu/odczytu samochodów, implementuje interfejs JsonInteraction dla klasy Car
+        carJsonInteraction = new JsonInteraction<Car>() {
+            @Override
+            public void Save(Object object, String destination) {
+                try {
+                    String json = gson.toJson(object);
+                    CleanFile(destination);
+                    WriteFile(destination, json);
+                } catch (Exception e) {
+                    FileManagerError error = new FileManagerError("SaveUsers", "Failed to save users to a text file.", e.getMessage());
+                    error.Handle();
+                }
+            }
+
+            @Override
+            public ArrayList<Car> Get(String destination) {
+                try {
+                    String rawData = ReadFileAsString(destination);
+                    ArrayList<Car> data = gson.fromJson(rawData, new TypeToken<List<Car>>(){}.getType());
+                    if (data == null) // for some reason gson.fromJson returns null instead of throwing an exception
+                        throw new JsonIOException("Failed to parse json.");
+                    return data;
+                } catch (Exception e) {
+                    FileManagerError error = new FileManagerError("GetCars", "Failed to read cars from a text file.", e.getMessage());
+                    error.Handle();
+                }
+                return new ArrayList<Car>();
+            }
+        };
     }
 
     public ArrayList<String> ReadFile(String fileName) {
@@ -130,58 +192,24 @@ public class FileManager implements UserData, CarData {
     @Override
     public void SaveUsers(ArrayList<User> users) {
         String path = GetJSONFilePath(userDestinationName);
-        try {
-            String json = gson.toJson(users);
-            CleanFile(path);
-            WriteFile(path, json);
-        } catch (Exception e) {
-            FileManagerError error = new FileManagerError("SaveUsers", "Failed to save users to a text file.", e.getMessage());
-            error.Handle();
-        }
+        userJsonInteraction.Save(users, path);
     }
 
     @Override
     public ArrayList<User> GetUsers() {
         String path = GetJSONFilePath(userDestinationName);
-        try {
-            String rawData = ReadFileAsString(path);
-            ArrayList<User> data = gson.fromJson(rawData, new TypeToken<List<User>>(){}.getType());
-            if (data == null) // for some reason gson.fromJson returns null instead of throwing an exception
-                throw new JsonIOException("Failed to parse json.");
-            return data;
-        } catch (Exception e) {
-            FileManagerError error = new FileManagerError("GetUsers", "Failed to read users from a text file.", e.getMessage());
-            error.Handle();
-        }
-        return new ArrayList<User>();
+        return userJsonInteraction.Get(path);
     }
 
     @Override
     public void SaveCars(ArrayList<Car> cars) {
         String path = GetJSONFilePath(carDestinationName);
-        try {
-            String json = gson.toJson(cars);
-            CleanFile(path);
-            WriteFile(path, json);
-        } catch (Exception e) {
-            FileManagerError error = new FileManagerError("SaveCars", "Failed to save cars to a text file.", e.getMessage());
-            error.Handle();
-        }
+        carJsonInteraction.Save(cars, path);
     }
 
     @Override
     public ArrayList<Car> GetCars() {
         String path = GetJSONFilePath(carDestinationName);
-        try {
-            String rawData = ReadFileAsString(path);
-            ArrayList<Car> data = gson.fromJson(rawData, new TypeToken<List<Car>>(){}.getType());
-            if (data == null) // for some reason gson.fromJson returns null instead of throwing an exception
-                throw new JsonIOException("Failed to parse json.");
-            return data;
-        } catch (Exception e) {
-            FileManagerError error = new FileManagerError("GetCars", "Failed to read cars from a text file.", e.getMessage());
-            error.Handle();
-        }
-        return new ArrayList<Car>();
+        return carJsonInteraction.Get(path);
     }
 }

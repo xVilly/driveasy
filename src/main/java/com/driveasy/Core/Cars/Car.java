@@ -27,6 +27,9 @@ public class Car implements Serializable {
         this.transmissionType = new ArrayList<TransmissionType>();
         this.pickupLocation = new ArrayList<PickupLocation>();
         this.category = new ArrayList<CarCategory>();
+        this.status = CarStatus.Available;
+        this.rating = 0;
+        
     }
 
     public UUID getId() {

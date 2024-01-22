@@ -1,6 +1,7 @@
 package com.driveasy.Core.Cars;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -108,10 +109,14 @@ public class CarManager {
         if (forceSave)
             Save();
         FileManager manager = FileManager.getInstance();
-        manager.WriteFile("logs/actions.txt", "["+LocalDate.now()+"] Car "+car.getId()+" has been deleted (name: "+car.getBrand()+" "+car.getModel()+")");
+        manager.WriteFile("logs/actions.txt", "["+LocalDateTime.now()+"] Car "+car.getId()+" has been deleted (name: "+car.getBrand()+" "+car.getModel()+")");
     }
 
     public boolean IsLoaded() {
         return loaded;
+    }
+
+    public boolean IsInitialized() {
+        return initialized;
     }
 }

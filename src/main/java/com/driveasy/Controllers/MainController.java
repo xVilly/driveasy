@@ -4,6 +4,7 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -11,10 +12,12 @@ import java.util.Locale;
 import javax.imageio.ImageIO;
 
 import com.driveasy.Core.Cars.Car;
+import com.driveasy.Core.Cars.CarCategory;
 import com.driveasy.Core.Cars.CarManager;
 import com.driveasy.Core.Cars.CarStatus;
 import com.driveasy.Core.Cars.LuggageCapacity;
 import com.driveasy.Core.Cars.PickupLocation;
+import com.driveasy.Core.Cars.TransmissionType;
 import com.driveasy.Core.Orders.Order;
 import com.driveasy.Core.Orders.OrderStatus;
 import com.driveasy.Core.Users.User;
@@ -129,6 +132,12 @@ public class MainController implements IController {
     @FXML
     private VBox ordersContent;
 
+    @FXML
+    private TextField priceFrom;
+
+    @FXML
+    private TextField priceTo;
+
     public void loadProfile() {
         User user = UserManager.getInstance().GetCurrentUser();
         if (user != null) {
@@ -216,6 +225,12 @@ public class MainController implements IController {
             }
             UserManager.getInstance().Save();
             loadOrders();
+            loadCars();
+            ManagerController _managerController = (ManagerController)SceneManager.getInstance().getController("ManagerPanel");
+            if (_managerController != null) {
+                _managerController.LoadCars();
+                _managerController.LoadOrders();
+            }
         });
         if (order.getStatus() != OrderStatus.PENDING) {
             cancelButton.setDisable(true);
@@ -369,29 +384,106 @@ public class MainController implements IController {
         browserScroll.setFitToWidth(true);
         browserContent.getChildren().clear();
         CarManager manager = CarManager.getInstance();
-        manager.InitializeUsingFileManager();
-        manager.Load();
-        for (Car car : manager.GetCars()) {
-            List<PickupLocation> locations = new ArrayList<PickupLocation>();
-            locations.add(PickupLocation.Airport);
-            locations.add(PickupLocation.BusStation);
-            car.setPickupLocation(locations);
-            car.setLuggageCapacity(LuggageCapacity.Medium);
-            car.setPrice((int)(100.0 + (Math.random() * 400.0)));
-            car.setStatus(CarStatus.Available);
+        if (!manager.IsInitialized())
+            manager.InitializeUsingFileManager();
+        if (!manager.IsLoaded())
+            manager.Load();
+        List<Car> cars = manager.GetCars();
+        if (cars == null) {
+            return;
+        }
+        if (sortName.isSelected()) {
+            cars.sort(new Comparator<Car>(){
+                public int compare(Car o1, Car o2){
+                    if (!sortAscend.isSelected())
+                        return o2.getBrand().compareTo(o1.getBrand());
+                    else
+                        return o1.getBrand().compareTo(o2.getBrand());
+                }
+            });
+        } else if (sortPrice.isSelected()) {
+            cars.sort(new Comparator<Car>(){
+                public int compare(Car o1, Car o2){
+                    if (!sortAscend.isSelected())
+                        return o2.getPrice() - o1.getPrice();
+                    else
+                        return o1.getPrice() - o2.getPrice();
+                }
+            });
+        } else if (sortRating.isSelected()) {
+            cars.sort(new Comparator<Car>(){
+                public int compare(Car o1, Car o2){
+                    if (!sortAscend.isSelected())
+                        return (int)(o2.getRating() - o1.getRating());
+                    else
+                        return (int)(o1.getRating() - o2.getRating());
+                }
+            });
+        }
+        for (Car car : cars) {
+            if (car.getStatus() != CarStatus.Available) {
+                continue;
+            }
+            if (categoryBig.isSelected() && !car.getCategory().contains(CarCategory.Big)) {
+                continue;
+            }
+            if (categoryMedium.isSelected() && !car.getCategory().contains(CarCategory.Medium)) {
+                continue;
+            }
+            if (categoryMinivan.isSelected() && !car.getCategory().contains(CarCategory.Minivan)) {
+                continue;
+            }
+            if (categoryPremium.isSelected() && !car.getCategory().contains(CarCategory.Premium)) {
+                continue;
+            }
+            if (categorySUV.isSelected() && !car.getCategory().contains(CarCategory.SUV)) {
+                continue;
+            }
+            if (categorySmall.isSelected() && !car.getCategory().contains(CarCategory.Small)) {
+                continue;
+            }
+            if (pickupAirport.isSelected() && !car.getPickupLocation().contains(PickupLocation.Airport)) {
+                continue;
+            }
+            if (pickupBus.isSelected() && !car.getPickupLocation().contains(PickupLocation.BusStation)) {
+                continue;
+            }
+            if (pickupRental.isSelected() && !car.getPickupLocation().contains(PickupLocation.Rental)) {
+                continue;
+            }
+            if (transmissionAutomatic.isSelected() && !(car.getTransmissionType().contains(TransmissionType.Automatic) || car.getTransmissionType().contains(TransmissionType.Any))) {
+                continue;
+            }
+            if (transmissionManual.isSelected() && !(car.getTransmissionType().contains(TransmissionType.Manual) || car.getTransmissionType().contains(TransmissionType.Any))) {
+                continue;
+            }
+            if (!priceFrom.getText().isEmpty() && !priceTo.getText().isEmpty()) {
+                try {
+                    int from = Integer.parseInt(priceFrom.getText());
+                    int to = Integer.parseInt(priceTo.getText());
+                    if (car.getPrice() < from || car.getPrice() > to) {
+                        continue;
+                    }
+                } catch (Exception e) {
+                    continue;
+                }
+            }
             displayCarCard(car);
         }
-        manager.Save();
-        System.out.println("saved cars");
     }
 
     public void onActivate() {
+        sortAscend.setSelected(true);
+
         loadProfile();
         loadCars();
         loadOrders();
 
-        if (!SceneManager.getInstance().isWindowShown("ManagerPanel")) {
-            SceneManager.getInstance().openPopupWindow("ManagerPanel", "ManagerPanel", "Manager Panel", false, true);
+        User cu = UserManager.getInstance().GetCurrentUser();
+        if (cu != null && cu.isAdmin()) {
+            if (!SceneManager.getInstance().isWindowShown("ManagerPanel")) {
+                SceneManager.getInstance().openPopupWindow("ManagerPanel", "ManagerPanel", "Manager Panel", false, true);
+            }
         }
     }
 
@@ -412,26 +504,58 @@ public class MainController implements IController {
 
     @FXML
     void onCategoryChange(ActionEvent event) {
-
+        loadCars();
     }
 
     @FXML
     void onPickupChange(ActionEvent event) {
-
+        loadCars();
     }
 
     @FXML
     void onTransmissionChange(ActionEvent event) {
-
+        loadCars();
     }
 
     @FXML
     void onSortDirection(ActionEvent event) {
-
+        if (event.getSource() == sortAscend)
+            sortDescend.setSelected(false);
+        else
+            sortAscend.setSelected(false);
+        loadCars();
     }
 
     @FXML
     void onSortType(ActionEvent event) {
+        if (event.getSource() == sortName){
+            sortPrice.setSelected(false);
+            sortRating.setSelected(false);
+        }
+        else if (event.getSource() == sortPrice){
+            sortName.setSelected(false);
+            sortRating.setSelected(false);
+        } else {
+            sortName.setSelected(false);
+            sortPrice.setSelected(false);
+        }
+        loadCars();
+    }
 
+    @FXML
+    void onPriceChange(ActionEvent event) {
+        if (priceFrom.getText().isEmpty() || priceTo.getText().isEmpty()) {
+            return;
+        }
+        try {
+            int from = Integer.parseInt(priceFrom.getText());
+            int to = Integer.parseInt(priceTo.getText());
+            if (from > to) {
+                return;
+            }
+        } catch (Exception e) {
+            return;
+        }
+        loadCars();
     }
 }

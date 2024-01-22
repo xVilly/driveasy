@@ -132,12 +132,12 @@
                               </Label>
                               <HBox prefWidth="200.0">
                                  <children>
-                                    <TextField alignment="CENTER" promptText="From">
+                                    <TextField fx:id="priceFrom" alignment="CENTER" onAction="#onPriceChange" promptText="From">
                                        <font>
                                           <Font name="JetBrains Mono Medium" size="12.0" />
                                        </font>
                                     </TextField>
-                                    <TextField alignment="CENTER" promptText="To" />
+                                    <TextField fx:id="priceTo" alignment="CENTER" onAction="#onPriceChange" promptText="To" />
                                  </children>
                               </HBox>
                               <Label text="Sort By">
@@ -312,7 +312,7 @@
                               </GridPane>
                               <FlowPane alignment="CENTER">
                                  <children>
-                                    <Button mnemonicParsing="false" onAction="#onEditProfile" style="-fx-background-color: #c6aff0;" text="Edit profile fields" textFill="#ffe4e4">
+                                    <Button mnemonicParsing="false" onAction="#onEditProfile" style="-fx-background-color: #a36122;" text="Edit profile fields" textFill="#ffe4e4">
                                        <font>
                                           <Font name="JetBrains Mono NL ExtraBold" size="12.0" />
                                        </font>

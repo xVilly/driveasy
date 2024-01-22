@@ -1,13 +1,16 @@
 package com.driveasy.Controllers;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import com.driveasy.Core.Cars.Car;
 import com.driveasy.Core.Cars.CarManager;
+import com.driveasy.Core.Cars.CarStatus;
 import com.driveasy.Core.Orders.Order;
 import com.driveasy.Core.Orders.OrderStatus;
 import com.driveasy.Core.Users.User;
 import com.driveasy.Core.Users.UserManager;
+import com.driveasy.Database.FileManager;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -101,6 +104,21 @@ public class OrderController implements IController {
         User currentUser = UserManager.getInstance().GetCurrentUser();
         currentUser.AddOrder(currentOrder);
         UserManager.getInstance().Save();
+        selectedCar.setStatus(CarStatus.Ordered);
+        CarManager.getInstance().UpdateCarById(selectedCar.getId(), selectedCar);
+        MainController _mainController = (MainController)SceneManager.getInstance().getController("MainPage");
+        if (_mainController != null) {
+            _mainController.loadCars();
+            _mainController.loadOrders();
+        }
+        ManagerController _managerController = (ManagerController)SceneManager.getInstance().getController("ManagerPanel");
+        if (_managerController != null) {
+            _managerController.LoadCars();
+            _managerController.LoadOrders();
+
+        }
+        FileManager manager = FileManager.getInstance();
+        manager.WriteFile("logs/actions.txt", "["+LocalDateTime.now()+"] User "+currentUser.getEmail()+" has placed order id "+currentOrder.getId()+"");
         SceneManager.getInstance().closePopupWindow("OrderPage");
     }
 

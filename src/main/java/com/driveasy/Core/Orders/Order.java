@@ -1,5 +1,6 @@
 package com.driveasy.Core.Orders;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,7 +9,7 @@ import java.util.UUID;
 
 import com.driveasy.Core.Cars.PickupLocation;
 
-public class Order {
+public class Order implements Serializable {
     private UUID id;
     private UUID carId;
     private UUID userId;

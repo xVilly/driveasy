@@ -1,15 +1,23 @@
 package com.driveasy.Core.Users;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 import com.driveasy.Core.Orders.Order;
 import com.driveasy.Database.FileManager;
 import com.driveasy.Database.UserData;
 import com.driveasy.Tools.LoggedError;
+
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class UserManager {
     private static final boolean forceSave = true;
@@ -95,12 +103,12 @@ public class UserManager {
         loaded = true;
     }
 
-    public UserValidationResult RegisterUser(User user) {
+    public UserValidationResult RegisterUser(User user, String inputPassword) {
         if (!loaded) {
             new UserManagerError("UserManager", "User manager not loaded", "User manager must be loaded before registering a user").Handle();
             return UserValidationResult.Error;
         }
-        UserValidationResult result = ValidateUserInfo(user);
+        UserValidationResult result = ValidateUserInfo(user, inputPassword);
         if (result != UserValidationResult.Valid) {
             return result;
         }
@@ -165,14 +173,14 @@ public class UserManager {
         }
     }
 
-    public UserValidationResult ValidateUserInfo(User user) {
+    public UserValidationResult ValidateUserInfo(User user, String inputPassword) {
         if (!(user.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$") && user.getEmail().length() > 3 && user.getEmail().length() < 254)) {
             return UserValidationResult.InvalidEmail;
         }
-        if (user.getPassword().length() < 8) {
+        if (inputPassword.length() < 8) {
             return UserValidationResult.PasswordTooShort;
         }
-        if (user.getPassword().length() > 128) {
+        if (inputPassword.length() > 128) {
             return UserValidationResult.PasswordTooLong;
         }
         if (user.getFirstName().length() > 128 || user.getLastName().length() > 128) {
@@ -195,8 +203,10 @@ public class UserManager {
             return false;
         }
         for (User user : users) {
-            if (user.getEmail().equals(email) && user.getPassword().equals(password))
-                return true;
+            if (user.getEmail().equals(email) && user.getPasswordHash() != null && user.getPasswordSalt() != null) {
+                if (user.getPasswordHash().equals(hashSHA512(password, user.getPasswordSalt())))
+                    return true;
+            }
         }
         return false;
     }
@@ -216,5 +226,35 @@ public class UserManager {
                 return;
             }
         }
+    }
+
+    public String hashSHA512(String passwordToHash, String salt){
+        String generatedPassword = null;
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-512");
+            md.update(salt.getBytes(StandardCharsets.UTF_8));
+            byte[] bytes = md.digest(passwordToHash.getBytes(StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            for(int i=0; i< bytes.length ;i++){
+                sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+            }
+            generatedPassword = sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return generatedPassword;
+    }
+
+    public String randomString(int targetStringLength) {
+        int leftLimit = 97; // letter 'a'
+        int rightLimit = 122; // letter 'z'
+        Random random = new Random();
+
+        String generatedString = random.ints(leftLimit, rightLimit + 1)
+        .limit(targetStringLength)
+        .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+        .toString();
+
+        return generatedString;
     }
 }

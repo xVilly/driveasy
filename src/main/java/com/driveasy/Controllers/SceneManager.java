@@ -6,6 +6,7 @@ import java.util.HashMap;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 
@@ -17,6 +18,7 @@ public class SceneManager {
         add("EditProfile");
         add("OrderPage");
         add("ManagerPanel");
+        add("AddCar");
     }};
 
     public static final String startingScene = "LoginPage";
@@ -36,6 +38,7 @@ public class SceneManager {
     public void Initialize(Stage primaryStage) {
         this.primaryStage = primaryStage;
         openWindows.put("primaryStage", primaryStage);
+        this.primaryStage.getIcons().add(new Image("Images/icon.png"));
     }
 
     public void addScreen(String name, Parent root){
@@ -82,6 +85,7 @@ public class SceneManager {
         }
         Stage s = new Stage();
         openWindows.put(windowName, s);
+        s.getIcons().add(new Image("Images/icon.png"));
         s.setScene(new Scene(root));
         s.setAlwaysOnTop(alwaysOnTop);
         s.setResizable(resizable);

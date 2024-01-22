@@ -12,7 +12,8 @@ public class User implements Serializable {
     private UUID id;
     private String firstName;
     private String lastName;
-    private String password;
+    private String passwordHash;
+    private String passwordSalt;
     private String email;
     private String address;
     private String phone;
@@ -21,14 +22,16 @@ public class User implements Serializable {
 
     public List<Order> orders;
 
-    public User(String firstName, String lastName, String password, String email, String address, String phone) {
+    public User(String firstName, String lastName, String passwordHash, String passwordSalt, String email, String address, String phone) {
         this.id = java.util.UUID.randomUUID();
         this.firstName = firstName;
         this.lastName = lastName;
-        this.password = password;
+        this.passwordHash = passwordHash;
+        this.passwordSalt = passwordSalt;
         this.email = email;
         this.address = address;
         this.phone = phone;
+        this.isAdmin = false;
         orders = new ArrayList<Order>();
     }
 
@@ -72,12 +75,20 @@ public class User implements Serializable {
         this.phone = phone;
     }
 
-    public String getPassword() {
-        return password;
+    public String getPasswordHash() {
+        return passwordHash;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public String getPasswordSalt() {
+        return passwordSalt;
+    }
+
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
+
+    public void setPasswordSalt(String passwordSalt) {
+        this.passwordSalt = passwordSalt;
     }
 
     public UUID getId() {
